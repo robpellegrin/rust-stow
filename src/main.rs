@@ -16,7 +16,7 @@ fn main() -> std::io::Result<()> {
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
-            println!("Could not determine the home directory!");
+            eprintln!("Could not determine the home directory!");
             return Ok(());
         }
     };
@@ -50,9 +50,9 @@ fn create_symlink(target: &Path, link: &Path, args: &Args) {
         }
         Err(e) => {
             if e.kind() == ErrorKind::AlreadyExists {
-                println!("Error: target already exists at {}", link.display());
+                eprintln!("Error: target already exists at {}", link.display());
             } else {
-                println!("Error creating symlink: {}", e);
+                eprintln!("Error creating symlink: {}", e);
             }
         }
     }
