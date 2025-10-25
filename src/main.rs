@@ -5,7 +5,7 @@ use std::{
     env, fs,
     io::{self, ErrorKind},
     os::unix::fs::symlink,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 mod args;
@@ -22,7 +22,7 @@ fn main() -> std::io::Result<()> {
 
     list_current_dir()?.par_iter().for_each(|item| {
         if args.verbose {
-            println!("{}", item);
+            println!("{}", item.display());
         }
     });
 
@@ -54,11 +54,11 @@ fn create_symlink(target: &Path, link: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
-fn list_current_dir() -> io::Result<Vec<String>> {
+fn list_current_dir() -> io::Result<Vec<PathBuf>> {
     let current_dir = env::current_dir()?;
 
-    let entries = fs::read_dir(current_dir)?
-        .filter_map(|entry| entry.ok().and_then(|e| e.file_name().into_string().ok()))
+    let entries = fs::read_dir(&current_dir)?
+        .filter_map(|entry| entry.ok().map(|e| e.path()))
         .collect();
 
     Ok(entries)
