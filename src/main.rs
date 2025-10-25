@@ -1,10 +1,17 @@
-use std::os::unix::fs::symlink;
-use std::{env, io::ErrorKind, path::Path};
+use args::Args;
+use clap::Parser;
+use rayon::prelude::*;
+use std::{
+    env, fs,
+    io::{self, ErrorKind},
+    os::unix::fs::symlink,
+    path::Path,
+};
 
 mod args;
 
 fn main() -> std::io::Result<()> {
-    // Get the home directory
+    let args = Args::parse();
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
@@ -13,9 +20,14 @@ fn main() -> std::io::Result<()> {
         }
     };
 
-    // Example of creating symlinks in the home directory
-    let target = Path::new("target_file.txt"); // Adjust your target file path
-    let symlink_name = Path::new("my_symlink.txt"); // Symlink name in the home directory
+    list_current_dir()?.par_iter().for_each(|item| {
+        if args.verbose {
+            println!("{}", item);
+        }
+    });
+
+    let target = Path::new("target_file.txt");
+    let symlink_name = Path::new("my_symlink.txt");
 
     let symlink_path = home_dir.join(symlink_name);
     create_symlink(target, &symlink_path)?;
@@ -40,4 +52,14 @@ fn create_symlink(target: &Path, link: &Path) -> std::io::Result<()> {
     }
 
     Ok(())
+}
+
+fn list_current_dir() -> io::Result<Vec<String>> {
+    let current_dir = env::current_dir()?;
+
+    let entries = fs::read_dir(current_dir)?
+        .filter_map(|entry| entry.ok().and_then(|e| e.file_name().into_string().ok()))
+        .collect();
+
+    Ok(entries)
 }
