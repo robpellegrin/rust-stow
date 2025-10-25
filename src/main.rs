@@ -12,6 +12,7 @@ mod args;
 
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
+
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
@@ -21,37 +22,35 @@ fn main() -> std::io::Result<()> {
     };
 
     list_current_dir()?.par_iter().for_each(|item| {
-        if args.verbose {
-            println!("{}", item.display());
+        if let Some(filename) = item.file_name() {
+            let new_path = home_dir.join(filename);
+            create_symlink(&item, &new_path, &args);
         }
     });
-
-    let target = Path::new("target_file.txt");
-    let symlink_name = Path::new("my_symlink.txt");
-
-    let symlink_path = home_dir.join(symlink_name);
-    create_symlink(target, &symlink_path)?;
 
     Ok(())
 }
 
-fn create_symlink(target: &Path, link: &Path) -> std::io::Result<()> {
+fn create_symlink(target: &Path, link: &Path, args: &Args) {
     match symlink(target, link) {
-        Ok(()) => println!(
-            "Symlink created: {} -> {}",
-            link.display(),
-            target.display()
-        ),
+        Ok(()) => {
+            if args.verbose {
+                println!(
+                    "Symlink created: {} -> {}",
+                    link.display(),
+                    target.display()
+                );
+            }
+        }
+
         Err(e) => {
             if e.kind() == ErrorKind::AlreadyExists {
-                println!("Error: A file already exists at {}", link.display());
+                println!("Error: target already exists at {}", link.display());
             } else {
                 println!("Error creating symlink: {}", e);
             }
         }
     }
-
-    Ok(())
 }
 
 fn list_current_dir() -> io::Result<Vec<PathBuf>> {
