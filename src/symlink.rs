@@ -1,6 +1,6 @@
-//use args::Args;
 use std::{
-    io::ErrorKind,
+    fs::OpenOptions,
+    io::{ErrorKind, Write},
     os::unix::fs::symlink,
     path::{Path, PathBuf},
 };
@@ -23,7 +23,11 @@ pub fn create_symlink(target: &Path, link: &Path, args: &Args) {
                     target.display()
                 );
             }
+            if let Err(e) = record_symlink(&link) {
+                eprintln!("Warning: Failed to record symlink: {}", e);
+            }
         }
+
         Err(e) => {
             if e.kind() == ErrorKind::AlreadyExists {
                 eprintln!("Error: target already exists at {}", link.display());
@@ -34,6 +38,16 @@ pub fn create_symlink(target: &Path, link: &Path, args: &Args) {
     }
 }
 
+/// Append the link path to a `.rstow` file in the current directory.
+fn record_symlink(link: &Path) -> std::io::Result<()> {
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(".rstow")?;
+
+    writeln!(file, "{}", link.display())?;
+    Ok(())
+}
 fn replace_dot_prefix(path: &Path) -> PathBuf {
     if let Some(filename) = path.file_name().and_then(|f| f.to_str()) {
         if let Some(rest) = filename.strip_prefix("dot-") {
