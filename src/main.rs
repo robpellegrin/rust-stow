@@ -5,9 +5,14 @@ use std::{env, fs, io, path::PathBuf};
 
 mod args;
 mod symlink;
+mod unstow;
 
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
+
+    if args.unstow {
+        unstow::cleanup_symlinks()?;
+    }
 
     let home_dir = match env::home_dir() {
         Some(path) => path,
