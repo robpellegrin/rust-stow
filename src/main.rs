@@ -10,10 +10,6 @@ mod unstow;
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
 
-    if args.unstow {
-        unstow::cleanup_symlinks()?;
-    }
-
     let home_dir = match env::home_dir() {
         Some(path) => path,
         None => {
@@ -22,7 +18,12 @@ fn main() -> std::io::Result<()> {
         }
     };
 
-    list_current_dir()?.par_iter().for_each(|item| {
+    if args.unstow {
+        unstow::cleanup_symlinks(&home_dir)?;
+        return Ok(());
+    }
+
+    list_current_dir()?.iter().for_each(|item| {
         if let Some(filename) = item.file_name() {
             let new_path = home_dir.join(filename);
             symlink::create_symlink(&item, &new_path, &args);
