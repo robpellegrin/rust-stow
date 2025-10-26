@@ -14,8 +14,8 @@ pub struct Args {
     pub verbose: bool,
 
     /// Removed all stowed items.
-    #[arg(short = 'd', action = ArgAction::SetTrue)]
-    pub delete: bool,
+    #[arg(short = 'd', long, action = ArgAction::SetTrue)]
+    pub unstow: bool,
 
     /// (Use with care!)  Import existing files into stow package
     #[arg(long, action = ArgAction::SetTrue)]
@@ -25,4 +25,3 @@ pub struct Args {
     #[arg(long, action = ArgAction::SetTrue)]
     pub dotfiles: bool,
 }
-
