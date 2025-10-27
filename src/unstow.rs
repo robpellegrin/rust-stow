@@ -1,4 +1,3 @@
-use std::env;
 use std::fs::{File, remove_file};
 use std::io::{self, BufRead};
 use std::path::Path;
