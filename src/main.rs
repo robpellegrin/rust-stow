@@ -1,3 +1,15 @@
+///
+/// =====================================================================
+/// Project Name: rust-stow
+/// Description: A fast and lightweight tool for managing dotfiles and
+///     software packages in your home directory through symbolic linking.
+/// Author: Robert Pellegrin
+/// Date: 2025-10-10
+/// Version: 0.0.1
+/// License: MIT
+/// Repository:
+/// =====================================================================
+///
 use args::Args;
 use clap::Parser;
 use rayon::prelude::*;
