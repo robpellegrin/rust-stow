@@ -23,7 +23,7 @@ fn main() -> std::io::Result<()> {
         return Ok(());
     }
 
-    list_current_dir()?.iter().for_each(|item| {
+    list_current_dir()?.par_iter().for_each(|item| {
         if let Some(filename) = item.file_name() {
             let new_path = home_dir.join(filename);
             symlink::create_symlink(&item, &new_path, &args);

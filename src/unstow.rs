@@ -1,9 +1,27 @@
-use std::{io, path::Path};
+use rayon::prelude::*;
+use std::{
+    env,
+    fs::{self, remove_file},
+    io,
+    path::{Path, PathBuf},
+};
 
-/// Reads `.rstow`, deletes each path listed inside, and then removes `.rstow` itself.
 pub fn cleanup_symlinks(home_dir: &Path) -> io::Result<()> {
-    println!("Home dir: {}", home_dir.display());
-    println!("Feature not yet implemented");
+    list_current_dir()?.par_iter().for_each(|item| {
+        if let Some(filename) = item.file_name() {
+            let _ = remove_file(home_dir.join(filename));
+        }
+    });
 
     Ok(())
+}
+
+fn list_current_dir() -> io::Result<Vec<PathBuf>> {
+    let current_dir = env::current_dir()?;
+
+    let entries = fs::read_dir(&current_dir)?
+        .filter_map(|entry| entry.ok().map(|e| e.path()))
+        .collect();
+
+    Ok(entries)
 }
