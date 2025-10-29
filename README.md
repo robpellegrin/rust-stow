@@ -1,2 +1,2 @@
 # rust-stow
-rust-stow — A fast, lightweight reimplementation of GNU Stow in Rust. Designed for managing dotfiles and software packages through symbolic linking, rust-stow provides the same reliable directory symlink management as GNU Stow, with improved performance, safety, and modern CLI ergonomics.  
+rust-stow is a fast and lightweight tool for managing dotfiles and software packages in your home directory through symbolic linking. Offering reliable directory symlink management.   
