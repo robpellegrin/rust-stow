@@ -11,6 +11,7 @@
 /// =====================================================================
 ///
 use std::{
+    fs::read_dir,
     io::ErrorKind,
     os::unix::fs::symlink,
     path::{Path, PathBuf},
@@ -38,7 +39,23 @@ pub fn create_symlink(target: &Path, link: &Path, args: &Args) {
 
         Err(e) => {
             if e.kind() == ErrorKind::AlreadyExists {
-                eprintln!("Error: target already exists at {}", link.display());
+                if link.is_dir() && target.is_dir() {
+                    // Recursively descend into subdirectories
+                    match read_dir(target) {
+                        Ok(entries) => {
+                            for entry in entries.flatten() {
+                                let sub_target = entry.path();
+                                let sub_link = link.join(entry.file_name());
+                                create_symlink(&sub_target, &sub_link, args);
+                            }
+                        }
+                        Err(err) => {
+                            eprintln!("Error reading directory {}: {}", target.display(), err);
+                        }
+                    }
+                } else {
+                    eprintln!("Error: target already exists at {}", link.display());
+                }
             } else {
                 eprintln!("Error creating symlink: {}", e);
             }
