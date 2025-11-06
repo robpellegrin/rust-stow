@@ -1,7 +1,7 @@
 ///
 /// =====================================================================
 /// Project Name: rust-stow
-/// Description: A fast and lightweight tool for managing dotfiles and 
+/// Description: A fast and lightweight tool for managing dotfiles and
 ///     software packages in your home directory through symbolic linking.
 /// Author: Robert Pellegrin
 /// Date: 2025-10-10
@@ -14,7 +14,11 @@ use clap::{ArgAction, Parser};
 
 #[derive(Parser)]
 #[command(arg_required_else_help = false)]
-#[command(version = "0.1.0", author = "Robert Pellegrin", about = "TODO")]
+#[command(
+    version = "0.2.1",
+    author = "Robert Pellegrin",
+    about = "A simple, fast tool for dotfile managment."
+)]
 
 pub struct Args {
     /// Do no perform any operations that modify the filesystem; merely show what would happen.
