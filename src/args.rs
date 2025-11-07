@@ -29,7 +29,7 @@ pub struct Args {
     #[arg(short = 'v', long, action = ArgAction::SetTrue)]
     pub verbose: bool,
 
-    /// Removed all stowed items.
+    /// Removes all stowed items.
     #[arg(short = 'd', long, action = ArgAction::SetTrue)]
     pub unstow: bool,
 
