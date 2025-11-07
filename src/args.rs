@@ -15,7 +15,7 @@ use clap::{ArgAction, Parser};
 #[derive(Parser)]
 #[command(arg_required_else_help = false)]
 #[command(
-    version = "0.2.1",
+    version = "0.2.2",
     author = "Robert Pellegrin",
     about = "A simple, fast tool for dotfile managment."
 )]

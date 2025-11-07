@@ -1,8 +1,9 @@
 [package]
 name = "rstow"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 
 [dependencies]
 clap = {version = "4.5", features = ["derive"]}
+dirs-next = "2.0.0"
 rayon = "1.11.0"

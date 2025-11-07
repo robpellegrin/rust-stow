@@ -12,8 +12,14 @@
 ///
 use args::Args;
 use clap::Parser;
+use dirs_next::home_dir;
 use rayon::prelude::*;
-use std::{env, fs, io, path::PathBuf};
+use std::{
+    env,
+    fs::{self, File},
+    io::{self, BufRead, BufReader},
+    path::{Path, PathBuf},
+};
 
 mod args;
 mod symlink;
@@ -21,11 +27,12 @@ mod unstow;
 
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
+    let ignore_files = read_ignore_file()?;
 
-    let home_dir = match env::home_dir() {
+    let home_dir = match home_dir() {
         Some(path) => path,
         None => {
-            eprintln!("Could not determine the home directory!");
+            eprintln!("Could not determine the user's home directory.");
             return Ok(());
         }
     };
@@ -37,8 +44,10 @@ fn main() -> std::io::Result<()> {
 
     list_current_dir()?.par_iter().for_each(|item| {
         if let Some(filename) = item.file_name() {
-            let new_path = home_dir.join(filename);
-            symlink::create_symlink(&item, &new_path, &args);
+            if !is_path_ignored(&ignore_files, &filename.to_string_lossy()) {
+                let new_path = home_dir.join(filename);
+                symlink::create_symlink(&item, &new_path, &args);
+            }
         }
     });
 
@@ -53,4 +62,32 @@ fn list_current_dir() -> io::Result<Vec<PathBuf>> {
         .collect();
 
     Ok(entries)
+}
+
+/// Reads the '.rstow-ignore' for files and directories that should be skipped.
+/// Returns an empty Vec if the file does not exist or cannot be read.
+fn read_ignore_file() -> io::Result<Vec<String>> {
+    let ignore_path = Path::new(".rstow-ignore");
+
+    if !ignore_path.exists() {
+        return Ok(Vec::new());
+    }
+
+    let file = File::open(&ignore_path)?;
+    let reader = BufReader::new(file);
+
+    let mut paths = Vec::new();
+    for line in reader.lines() {
+        let line = line?;
+        let trimmed = line.trim();
+        if !trimmed.is_empty() && !trimmed.starts_with('#') {
+            paths.push(trimmed.to_string());
+        }
+    }
+
+    Ok(paths)
+}
+
+fn is_path_ignored(paths: &Vec<String>, path_to_check: &str) -> bool {
+    paths.contains(&path_to_check.to_string())
 }
