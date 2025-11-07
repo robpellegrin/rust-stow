@@ -7,6 +7,13 @@ rust-stow is a fast and lightweight tool for managing dotfiles and software pack
  - ~~.rstow-ignore~~
  - `--force` flag to overwrite confilcting files.
 
+## Building & Installation
+Using the makefile:
+```
+make build && make install
+```
+This compiles rstow and creates a symlink at `~/.local/bin`
+
 ## Usage
 ```
 rstow --help
