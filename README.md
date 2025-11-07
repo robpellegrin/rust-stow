@@ -3,8 +3,8 @@ rust-stow is a fast and lightweight tool for managing dotfiles and software pack
 
 ## Roadmap / TODO
  - ~~symlink into existing directories~~
- - Ignore git files/dirs
- - .rstow-ignore
+ - ~~Ignore git files/dirs~~
+ - ~~.rstow-ignore~~
  - `--force` flag to overwrite confilcting files.
 
 ## Usage
