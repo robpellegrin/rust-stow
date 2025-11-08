@@ -1,5 +1,5 @@
 TARGET = rstow
-INSTALL_DIR= $(HOME)/.local/bin/$(TARGET)
+INSTALL_DIR= $(HOME)/.cargo/bin/$(TARGET)
 
 build:
 	cargo build --release
