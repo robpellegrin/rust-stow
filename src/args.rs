@@ -15,13 +15,13 @@ use clap::{ArgAction, Parser};
 #[derive(Parser)]
 #[command(arg_required_else_help = false)]
 #[command(
-    version = "0.2.2",
+    version = "0.2.3",
     author = "Robert Pellegrin",
     about = "A simple, fast tool for dotfile managment."
 )]
 
 pub struct Args {
-    /// Do no perform any operations that modify the filesystem; merely show what would happen.
+    /// Do not perform any operations that modify the filesystem; merely show what would happen.
     #[arg(short = 'n', long, action = ArgAction::SetTrue)]
     pub simulate: bool,
 
@@ -33,9 +33,13 @@ pub struct Args {
     #[arg(short = 'd', long, action = ArgAction::SetTrue)]
     pub unstow: bool,
 
-    /// (Use with care!)  Import existing files into stow package
+    /// (Use with care!) Import existing files into stow package
     #[arg(long, action = ArgAction::SetTrue)]
     pub adopt: bool,
+
+    /// (Use with care!) Overwrite conflicting files
+    #[arg(short='f',long,  action = ArgAction::SetTrue)]
+    pub force: bool,
 
     /// Stow packages that start with "dot-" and not ".".
     #[arg(long, action = ArgAction::SetTrue)]
