@@ -33,13 +33,13 @@ pub struct Args {
     #[arg(short = 'd', long, action = ArgAction::SetTrue)]
     pub unstow: bool,
 
-    /// (Use with care!) Import existing files into stow package
-    #[arg(long, action = ArgAction::SetTrue)]
-    pub adopt: bool,
-
     /// (Use with care!) Overwrite conflicting files
     #[arg(short='f',long,  action = ArgAction::SetTrue)]
     pub force: bool,
+
+    /// (Use with care!) Import existing files into stow package
+    #[arg(long, action = ArgAction::SetTrue)]
+    pub adopt: bool,
 
     /// Stow packages that start with "dot-" and not ".".
     #[arg(long, action = ArgAction::SetTrue)]

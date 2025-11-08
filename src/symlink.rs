@@ -7,11 +7,11 @@
 /// Date: 2025-10-10
 /// Version: 0.0.1
 /// License: MIT
-/// Repository:
+/// Repository: https://github.com/robpellegrin/rust-stow
 /// =====================================================================
 ///
 use std::{
-    fs::read_dir,
+    fs::{self, read_dir},
     io::ErrorKind,
     os::unix::fs::symlink,
     path::{Path, PathBuf},
@@ -25,6 +25,10 @@ pub fn create_symlink(target: &Path, link: &Path, args: &Args) {
     } else {
         link.to_path_buf()
     };
+
+    if args.force {
+        let _ = fs::remove_file(&link);
+    }
 
     match symlink(target, &link) {
         Ok(()) => {
